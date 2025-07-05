@@ -43,14 +43,15 @@ async function run() {
       res.send(result);
     });
 
+    //summary
     app.get("/sumExpense", async (req, res) => {
       const result = await expenseCollection
         .aggregate([
           {
             $group: {
               _id: null,
-              totalExpense: { $sum: "$amount" },
-              highestExpense: { $max: "$amount" },
+              totalExpense: { $sum: { $toDouble: "$amount" } },
+              highestExpense: { $max: { $toDouble: "$amount" } },
             },
           },
         ])
