@@ -40,7 +40,26 @@ async function run() {
       console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await expenseCollection.deleteOne(query);
-      res.send(result)
+      res.send(result);
+    });
+
+    app.get("/sumExpense", async (req, res) => {
+      const result = await expenseCollection
+        .aggregate([
+          {
+            $group: {
+              _id: null,
+              totalExpense: { $sum: "$amount" },
+              highestExpense: { $max: "$amount" },
+            },
+          },
+        ])
+        .toArray();
+
+      const expenses = result.length > 0 ? result[0].totalExpense : 0;
+      const highest = result.length > 0 ? result[0].highestExpense : 0;
+
+      res.send({ totalExpense: expenses, highestExpense: highest });
     });
   } finally {
   }
