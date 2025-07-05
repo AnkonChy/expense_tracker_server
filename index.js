@@ -21,10 +21,17 @@ async function run() {
       .db("expense-tracker")
       .collection("expense");
 
+    //add expense api
     app.post("/addExpense", async (req, res) => {
       const data = req.body;
       const result = await expenseCollection.insertOne(data);
       res.send(result);
+    });
+
+    //all expense
+    app.get("/allExpense", async (req, res) => {
+      const result = await expenseCollection.find().toArray();
+      res.send(result)
     });
   } finally {
   }
