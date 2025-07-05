@@ -17,6 +17,15 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
+    const expenseCollection = client
+      .db("expense-tracker")
+      .collection("expense");
+
+    app.post("/addExpense", async (req, res) => {
+      const data = req.body;
+      const result = await expenseCollection.insertOne(data);
+      res.send(result);
+    });
   } finally {
   }
 }
